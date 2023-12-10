@@ -1,32 +1,44 @@
-// Manejar el evento de envío del formulario
-form.addEventListener('submit', function (event) {
-    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+document.addEventListener('DOMContentLoaded', function () {
+    new Vue({
+        el: '#app',
+        data: {
+            id: 1,
+            producto_id: 1,
+            cantidad: 0,
+            fecha: ''
+        },
+        methods: {
+            modificar: function () {
+                // Obtener los datos del formulario
+                const productoId = this.producto_id;
+                const cantidad = this.cantidad;
+                const fecha = this.fecha;
 
-    // Obtener los valores del formulario
-    const productoId = productoSelect.value;
-    const cantidad = cantidadInput.value;
+                // Validar los campos del formulario
+                if (!productoId || cantidad <= 0 || !fecha) {
+                    console.error('Por favor, completa todos los campos correctamente.');
+                    return;
+                }
 
-    // Validar los campos del formulario
-    if (!productoId || !cantidad || cantidad <= 0) {
-        // Mostrar un mensaje de error o realizar acciones correspondientes a la validación fallida
-        console.error('Por favor, completa todos los campos y asegúrate de que la cantidad sea mayor que 0.');
-        return;
-    }
+                // Crear objeto con los datos a enviar al servidor
+                const data = {
+                    producto_id: productoId,
+                    cantidad: cantidad,
+                    fecha: fecha
+                };
 
-    // Aquí puedes realizar cualquier otra validación necesaria...
-
-    // Procesar la venta (enviar datos al servidor, realizar acciones, etc.)
-    realizarVenta(productoId, cantidad);
-
-    // Limpiar el formulario después de procesar la venta
-    form.reset();
+                // Enviar la solicitud al servidor utilizando Axios
+                axios.put(`http://127.0.0.1:5000/ventas/${this.id}`, data)
+                    .then(response => {
+                        // Manejar la respuesta del servidor
+                        console.log('Respuesta del servidor:', response.data);
+                    })
+                    .catch(error => {
+                        // Manejar errores de la solicitud
+                        console.error('Error al enviar la solicitud al servidor:', error);
+                    });
+            }
+        }
+    });
 });
 
-// Función para realizar la venta (puedes ajustar esto según tu lógica específica)
-function realizarVenta(productoId, cantidad) {
-    // Aquí puedes realizar una solicitud AJAX para enviar datos al servidor
-    // o realizar acciones locales correspondientes a la venta
-    console.log('Realizando venta con Producto ID:', productoId, 'Cantidad:', cantidad);
-
-    // Puedes agregar más lógica aquí según tus necesidades
-}

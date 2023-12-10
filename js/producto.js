@@ -4,7 +4,7 @@ createApp({
     data() {
         return {
             productos: [],
-            url: 'http://localhost:5000/productos',
+            url: 'http://127.0.0.1:5000/productos',
             error: false,
             cargando: true,
             id: 0,
@@ -16,28 +16,29 @@ createApp({
     },
     methods: {
         fetchData(url) {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    this.productos = data;
+            axios.get(url)
+                .then(response => {
+                    this.productos = response.data;
                     this.cargando = false;
                 })
                 .catch(err => {
                     console.error(err);
-                    this.error = true;
+                    this.error = 'Error al cargar los productos. Por favor, inténtalo de nuevo más tarde.';
                 });
         },
+        
         eliminar(producto) {
             const url = this.url + '/' + producto;
-            var options = {
-                method: 'DELETE',
-            };
-            fetch(url, options)
-                .then(res => res.text())
-                .then(res => {
-                    location.reload();
+            axios.delete(url)
+                .then(() => {
+                    this.productos = this.productos.filter(p => p.id !== producto);
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error al eliminar");
                 });
         },
+        
         grabar() {
             let producto = {
                 nombre: this.nombre,
@@ -45,20 +46,14 @@ createApp({
                 stock: this.stock,
                 imagen: this.imagen,
             };
-            var options = {
-                body: JSON.stringify(producto),
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                redirect: 'follow',
-            };
-            fetch(this.url, options)
-                .then(function () {
+            axios.post(this.url, producto)
+                .then(() => {
                     alert("Registro grabado");
                     window.location.href = "./productos.html";
                 })
                 .catch(err => {
                     console.error(err);
-                    alert("Error al Grabarr");
+                    alert("Error al grabar");
                 });
         },
         getImagenUrl(imagen) {
