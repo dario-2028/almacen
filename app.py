@@ -28,7 +28,7 @@ class Producto(db.Model):
         self.nombre = nombre
         self.precio = precio
         self.stock = stock
-        self.imagen = imagen
+        self.imagen = f"img/{imagen}" 
 
 # Definición de la clase Ventas
 class Ventas(db.Model):

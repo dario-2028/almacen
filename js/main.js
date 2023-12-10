@@ -34,4 +34,6 @@ document.getElementById("header").innerHTML = `
     </nav>
 `;
 
+// Aquí puedes agregar otras configuraciones o scripts necesarios para tu aplicación
+
 
